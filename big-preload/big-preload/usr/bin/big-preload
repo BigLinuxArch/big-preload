@@ -1,0 +1,111 @@
+#!/bin/sh
+
+displayManagerLink="$(readlink /etc/systemd/system/display-manager.service)"
+
+# Verify greater than 1,5 Gb RAM
+if [ "$(grep MemTotal /proc/meminfo | awk '{ print $2 }')" -gt "1500000" ]; then
+
+    # KDE Plasma
+    if [ "$displayManagerLink" = "/usr/lib/systemd/system/sddm.service" ]; then
+
+        #SDDM
+        nice -n+20 ionice -c 3 vmtouch -f /usr/bin/sddm /usr/bin/sddm-greeter-qt6 /usr/lib/Xorg /usr/lib/sddm/sddm-helper /usr/bin/kwin_wayland
+
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/bin/sddm /usr/bin/sddm-greeter-qt6 /usr/lib/Xorg /usr/lib/sddm/sddm-helper | grep "=> " | awk '{print $3}' | sort | uniq)
+
+        #KDE
+        nice -n+20 ionice -c 3 vmtouch -f /usr/bin/plasmashell /usr/bin/kwin_x11 /usr/bin/kded6 /usr/bin/dolphin /usr/bin/kate /usr/bin/kwalletd6 /usr/bin/startplasma-x11 /usr/bin/startplasma-wayland /usr/bin/dbus-broker-launch /usr/lib/dconf-service /usr/lib/kactivitymanagerd /usr/bin/ksmserver /usr/lib/polkit-kde-authentication-agent-1 /usr/lib/org_kde_powerdevil /usr/bin/xembedsniproxy /usr/bin/kaccess /usr/bin/gmenudbusmenuproxy /usr/lib/kdeconnectd /usr/lib/geoclue-2.0/demos/agent /usr/bin/msm_kde_notifier /usr/lib/gvfsd /usr/lib/gvfsd-fuse /usr/bin/konsole /usr/bin/pipewire /usr/bin/wireplumber /usr/bin/ksplashqml
+
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/bin/plasmashell /usr/bin/kwin_x11 /usr/bin/kded6 /usr/bin/dolphin /usr/bin/kate /usr/bin/kwalletd6 /usr/bin/startplasma-x11 /usr/bin/startplasma-wayland /usr/bin/dbus-broker-launch /usr/lib/dconf-service /usr/lib/kactivitymanagerd /usr/bin/ksmserver /usr/lib/polkit-kde-authentication-agent-1 /usr/lib/org_kde_powerdevil /usr/bin/xembedsniproxy /usr/bin/kaccess /usr/bin/gmenudbusmenuproxy /usr/lib/kdeconnectd /usr/lib/geoclue-2.0/demos/agent /usr/bin/msm_kde_notifier /usr/lib/gvfsd /usr/lib/gvfsd-fuse /usr/bin/konsole /usr/bin/pipewire /usr/bin/wireplumber /usr/bin/ksplashqml | grep "=> " | awk '{print $3}' | sort | uniq)
+
+        
+        #PRELOAD user last login
+        BIG_PRELOAD_USER="$(grep ^User= /var/lib/sddm/state.conf | cut -f2 -d= | sed 's| $||g')"
+        nice -n+20 ionice -c 3 vmtouch -t $(cat /home/${BIG_PRELOAD_USER}/.big_preload)
+        
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/bin/gnome-calculator | grep "=> " | awk '{print $3}' | sort | uniq)
+        nice -n+20 ionice -c 3 vmtouch -f /usr/bin/gnome-calculator
+
+    fi
+
+    # Gnome
+    if [ "$displayManagerLink" = "/usr/lib/systemd/system/gdm.service" ]; then
+            # GDM
+            nice -n+20 ionice -c 3 vmtouch -f /usr/bin/gdm /usr/bin/gnome-shell /usr/bin/Xwayland /usr/bin/gjs /usr/bin/wireplumber /usr/lib/gdm-session-worker /usr/lib/gdm-wayland-session /usr/bin/gdmflexiserver
+            
+            nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/bin/gdm /usr/bin/gnome-shell /usr/bin/Xwayland /usr/bin/gjs /usr/bin/wireplumber /usr/lib/gdm-session-worker /usr/lib/gdm-wayland-session /usr/bin/gdmflexiserver | grep "=> " | awk '{print $3}' | sort | uniq)
+    
+            nice -n+20 ionice -c 3 vmtouch -f /usr/lib/evolution-data-server/evolution-alarm-notify /usr/lib/gsd-xsettings /usr/lib/xdg-desktop-portal-gnome /usr/lib/tracker-miner-fs-3 /usr/lib/xdg-desktop-portal-gtk /usr/lib/gsd-power /usr/lib/gsd-media-keys /usr/lib/gsd-wacom /usr/lib/gsd-color /usr/lib/gsd-keyboard /usr/lib/gnome-session-binary /usr/lib/gvfs-udisks2-volume-monitor /usr/lib/gsd-datetime /usr/lib/gvfsd-recent /usr/lib/xdg-desktop-portal /usr/lib/goa-identity-service /usr/lib/gsd-sound /usr/lib/evolution-calendar-factory /usr/bin/gnome-keyring-daemon /usr/lib/gvfs-afc-volume-monitor /usr/lib/gsd-disk-utility-notify /usr/lib/evolution-addressbook-factory /usr/lib/gsd-smartcard /usr/lib/gvfs-gphoto2-volume-monitor /usr/lib/dconf-service /usr/lib/gsd-housekeeping /usr/lib/gsd-usb-protection /usr/lib/xdg-document-portal /usr/lib/at-spi2-registryd /usr/lib/at-spi-bus-launcher /usr/lib/gsd-rfkill /usr/lib/gsd-sharing /usr/lib/gvfs-goa-volume-monitor /usr/lib/gsd-a11y-settings /usr/lib/gvfsd-metadata /usr/lib/bluetooth/obexd /usr/lib/gvfs-mtp-volume-monitor /usr/lib/gvfsd-trash /usr/lib/gvfsd /usr/lib/gsd-screensaver-proxy /usr/lib/xdg-permission-store /usr/lib/gsd-print-notifications /usr/lib/gnome-session-ctl /usr/lib/gsd-printer /usr/lib/gvfsd-fuse /usr/lib/goa-daemon /usr/lib/gnome-shell-calendar-server /usr/bin/nautilus /usr/bin/gnome-calculator /usr/bin/kgx /usr/bin/gnome-system-monitor /usr/bin/gnome-text-editor
+            
+            nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/evolution-data-server/evolution-alarm-notify /usr/lib/gsd-xsettings /usr/lib/xdg-desktop-portal-gnome /usr/lib/tracker-miner-fs-3 /usr/lib/xdg-desktop-portal-gtk /usr/lib/gsd-power /usr/lib/gsd-media-keys /usr/lib/gsd-wacom /usr/lib/gsd-color /usr/lib/gsd-keyboard /usr/lib/gnome-session-binary /usr/lib/gvfs-udisks2-volume-monitor /usr/lib/gsd-datetime /usr/lib/gvfsd-recent /usr/lib/xdg-desktop-portal /usr/lib/goa-identity-service /usr/lib/gsd-sound /usr/lib/evolution-calendar-factory /usr/bin/gnome-keyring-daemon /usr/lib/gvfs-afc-volume-monitor /usr/lib/gsd-disk-utility-notify /usr/lib/evolution-addressbook-factory /usr/lib/gsd-smartcard /usr/lib/gvfs-gphoto2-volume-monitor /usr/lib/dconf-service /usr/lib/gsd-housekeeping /usr/lib/gsd-usb-protection /usr/lib/xdg-document-portal /usr/lib/at-spi2-registryd /usr/lib/at-spi-bus-launcher /usr/lib/gsd-rfkill /usr/lib/gsd-sharing /usr/lib/gvfs-goa-volume-monitor /usr/lib/gsd-a11y-settings /usr/lib/gvfsd-metadata /usr/lib/bluetooth/obexd /usr/lib/gvfs-mtp-volume-monitor /usr/lib/gvfsd-trash /usr/lib/gvfsd /usr/lib/gsd-screensaver-proxy /usr/lib/xdg-permission-store /usr/lib/gsd-print-notifications /usr/lib/gnome-session-ctl /usr/lib/gsd-printer /usr/lib/gvfsd-fuse /usr/lib/goa-daemon /usr/lib/gnome-shell-calendar-server /usr/bin/nautilus /usr/bin/gnome-calculator /usr/bin/kgx /usr/bin/gnome-system-monitor /usr/bin/gnome-text-editor | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+fi
+
+
+
+if [ ! -e "/livefs-pkgs.txt" ]; then
+    #bigbashview
+    QT_QPA_PLATFORM=offscreen nice -n+20 ionice -c 3 bigbashview -t qt 'execute close$' &
+fi
+
+if [ "$(grep MemTotal /proc/meminfo | awk '{ print $2 }')" -gt "2500000" ]; then
+
+    if [ -e "/etc/big-preload/enable-firefox" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/lib/firefox/
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/firefox/firefox | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+    
+    if [ -e "/etc/big-preload/enable-librewolf" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/lib/librewolf/librewolf
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/librewolf/librewolf | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-brave" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f  /usr/lib/brave-browser/brave
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/brave-browser/brave | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-chrome" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /opt/google/chrome/chrome
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /opt/google/chrome/chrome | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-chromium" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/lib/chromium/chromium
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/chromium/chromium | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-palemoon" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/lib/palemoon/palemoon-bin
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/palemoon/palemoon-bin | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-opera" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/lib/opera/opera
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/opera/opera | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-vivaldi" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /opt/vivaldi/vivaldi-bin
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /opt/vivaldi/vivaldi-bin | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+    if [ -e "/etc/big-preload/enable-epiphany" ]; then
+        nice -n+20 ionice -c 3 vmtouch -f /usr/bin/epiphany
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/bin/epiphany | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+
+fi
+
+
+
+if [ -e "/etc/big-preload/enable-libreoffice" ]; then
+    # Verify greater than 3.4 Gb RAM
+    if [ "$(grep MemTotal /proc/meminfo | awk '{ print $2 }')" -gt "3400000" ]; then
+        nice -n+20 ionice -c 3 vmtouch -t -f /usr/lib/libreoffice/program/*
+        nice -n+20 ionice -c 3 vmtouch -f $(nice -n+20 ionice -c 3 ldd /usr/lib/libreoffice/program/soffice.bin | grep "=> " | awk '{print $3}' | sort | uniq)
+    fi
+fi
+
+# Intel faster
+sysctl -q -w dev.i915.perf_stream_paranoid=0 2> /dev/null

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sleep 30
+
+if [ ! -e "/livefs-pkgs.txt" ]; then
+    /usr/bin/lsof -c plasmashell -c kwin_x11 -c kwin_wayland -c kded6 | grep ' mem ' | awk '{print $8}' | sort -r -u > ~/.big_preload
+fi
